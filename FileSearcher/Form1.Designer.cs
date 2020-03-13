@@ -45,11 +45,18 @@
 			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.treeView1 = new System.Windows.Forms.TreeView();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.button2 = new System.Windows.Forms.Button();
+			this.button3 = new System.Windows.Forms.Button();
+			this.progressBar1 = new System.Windows.Forms.ProgressBar();
+			this.label5 = new System.Windows.Forms.Label();
+			this.label6 = new System.Windows.Forms.Label();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.groupBox5.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// openFileDialog1
@@ -129,7 +136,7 @@
 			this.groupBox4.Controls.Add(this.label2);
 			this.groupBox4.Controls.Add(this.label1);
 			this.groupBox4.Controls.Add(this.listBox1);
-			this.groupBox4.Location = new System.Drawing.Point(28, 135);
+			this.groupBox4.Location = new System.Drawing.Point(28, 207);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(312, 143);
 			this.groupBox4.TabIndex = 9;
@@ -186,7 +193,7 @@
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.treeView1);
-			this.groupBox5.Location = new System.Drawing.Point(357, 135);
+			this.groupBox5.Location = new System.Drawing.Point(360, 207);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(373, 209);
 			this.groupBox5.TabIndex = 10;
@@ -195,16 +202,76 @@
 			// 
 			// treeView1
 			// 
-			this.treeView1.Location = new System.Drawing.Point(6, 20);
+			this.treeView1.Location = new System.Drawing.Point(6, 19);
 			this.treeView1.Name = "treeView1";
 			this.treeView1.Size = new System.Drawing.Size(361, 183);
 			this.treeView1.TabIndex = 0;
+			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.label6);
+			this.groupBox6.Controls.Add(this.label5);
+			this.groupBox6.Controls.Add(this.progressBar1);
+			this.groupBox6.Controls.Add(this.button3);
+			this.groupBox6.Controls.Add(this.button2);
+			this.groupBox6.Location = new System.Drawing.Point(31, 124);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(713, 77);
+			this.groupBox6.TabIndex = 12;
+			this.groupBox6.TabStop = false;
+			// 
+			// button2
+			// 
+			this.button2.Location = new System.Drawing.Point(23, 33);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(75, 23);
+			this.button2.TabIndex = 0;
+			this.button2.Text = "Запуск";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
+			// 
+			// button3
+			// 
+			this.button3.Location = new System.Drawing.Point(119, 33);
+			this.button3.Name = "button3";
+			this.button3.Size = new System.Drawing.Size(75, 23);
+			this.button3.TabIndex = 1;
+			this.button3.Text = "Отмена";
+			this.button3.UseVisualStyleBackColor = true;
+			this.button3.Visible = false;
+			this.button3.Click += new System.EventHandler(this.button3_Click);
+			// 
+			// progressBar1
+			// 
+			this.progressBar1.Location = new System.Drawing.Point(6, 10);
+			this.progressBar1.Name = "progressBar1";
+			this.progressBar1.Size = new System.Drawing.Size(697, 17);
+			this.progressBar1.TabIndex = 2;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(256, 42);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(137, 13);
+			this.label5.TabIndex = 3;
+			this.label5.Text = "Время с запуска прошло:";
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(416, 42);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(34, 13);
+			this.label6.TabIndex = 4;
+			this.label6.Text = "0 сек";
 			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(756, 450);
+			this.Controls.Add(this.groupBox6);
 			this.Controls.Add(this.groupBox5);
 			this.Controls.Add(this.groupBox4);
 			this.Controls.Add(this.groupBox3);
@@ -220,6 +287,8 @@
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			this.groupBox5.ResumeLayout(false);
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox6.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -242,6 +311,12 @@
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.TreeView treeView1;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.ProgressBar progressBar1;
+		private System.Windows.Forms.Button button3;
+		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.Label label6;
+		private System.Windows.Forms.Label label5;
 	}
 }
 
