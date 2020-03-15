@@ -53,7 +53,7 @@
     <Compile Include="ConflictForm.Designer.cs">
       <DependentUpon>ConflictForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileSearcher.cs" />
+    <Compile Include="SearchOperator.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

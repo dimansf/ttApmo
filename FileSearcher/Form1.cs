@@ -17,23 +17,36 @@ namespace FileSearcher
 	public partial class Form1 : Form
 	{
 
-		private FileSearcher fs = null;
-		private List<Thread> threads = null;
-		private string[] button2Text = new string[] { "Запуск", "Продолжить", "Приостановить" };
-		private string dir = "";
-		private List<string> selectionList = new List<string>();
+
+		private string[] button2Text = new string[] { "Запуск",  "Приостановить", "Продолжить" };
+		private enum button2Pos {RUN = 0, SUSPEND  =1, RESUME = 2};
+		private string selectedDir = "";
+		private SearchOperator fileSearcher;
+
+		private int chapter = 1;
+		private string currentFile = "";
+
 		private DateTime runDate = DateTime.Now;
-		private bool isRunning = false;
-		private static System.Timers.Timer aTimer = new System.Timers.Timer(1000);
-		private TreeViewAdder tw = null;
+
+
+		System.Windows.Forms.Timer timer;
+
+		private CancellationTokenSource cancelToken;
+		private TreeViewAdder treeAdder;
 
 		public Form1()
 		{
 			InitializeComponent();
-			threads = new List<Thread>();
-			tw = new TreeViewAdder(treeView1);
-			//fs = new FileSearcher(null, treeView1, progressBar1, listBox1);
+			
+			
+			treeAdder = new TreeViewAdder(treeView1);
 
+			timer = new System.Windows.Forms.Timer();
+			timer.Interval = 1000;
+			timer.Tick += updateChecker;
+			
+
+			cancelToken = new CancellationTokenSource();
 
 		}
 
@@ -47,16 +60,25 @@ namespace FileSearcher
 
 		}
 
-		private  void button1_Click(object sender, EventArgs e)
+		private void button1_Click(object sender, EventArgs e)
 		{
+
+
 			using (var fbd = new FolderBrowserDialog())
 			{
 				DialogResult result = fbd.ShowDialog();
 
 				if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
 				{
-					dir = fbd.SelectedPath;
-					
+					fileSearcher = new SearchOperator(fbd.SelectedPath);
+					fileSearcher.onCurrentScanFile += (a, args) =>
+					{
+						var ar = args as CustomArgs;
+						currentFile = ar.fileName;
+
+					};
+					label1.Text = selectedDir;
+
 				}
 			}
 		}
@@ -83,108 +105,131 @@ namespace FileSearcher
 
 		private void button3_Click(object sender, EventArgs e)
 		{
-			threads.ForEach(th => th.Abort());
-			button2.Text = button2Text[0];
+			cancelToken.Cancel();
+			cancelToken = new CancellationTokenSource();
+
+			treeView1.Nodes.Clear();
+			progressBar1.Value = 0;
+			label1.Text = "";
+			label6.Text = "";
+			label3.Text = "";
+			button2.Text = button2Text[Convert.ToInt32(button2Pos.RUN)];
 			button3.Visible = false;
+			chapter = 1;
+
 		}
 
-		private async void watch(bool toStop = false) {
 
-			// Create a timer with a two second interval.
-			try {
 
-				if (toStop)
-				{
-					aTimer.Stop();
-				}
-			} catch 
-			{
-				return;
-			}
-
-			// Hook up the Elapsed event for the timer. 
-			aTimer.Elapsed += updateChecker;
-			aTimer.AutoReset = true;
-			aTimer.Enabled = true;
-
-			
-
-			
-		}
-		private async void updateChecker(Object source, ElapsedEventArgs e)
+		private void updateChecker(object sender, EventArgs e)
 		{
-
-			if (threads.All(th => th.ThreadState == ThreadState.Stopped)) {
-				aTimer.Stop();
-				return;
-			};
 			var diff = DateTime.Now - runDate;
 
-			label6.Text = $"{diff.Seconds} секунд" +
-				((diff.Minutes != 0) ? $" {diff.Minutes} минут" : "") +
-				((diff.Hours != 0) ? $" {diff.Hours} часов" : "");
+			label6.Text = ((diff.Hours != 0) ? $" {diff.Hours} часов " : "") +
+				((diff.Minutes != 0) ? $" {diff.Minutes} минут " : "") +
+				$"{diff.Seconds} секунд ";
 
-			tw.Add(selectionList);
-			
-
+			label3.Text = currentFile;
+			treeAdder.Add(fileSearcher.Result);
 		}
-		private void button2_Click(object sender, EventArgs e)
+
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private async void button2_Click(object sender, EventArgs e)
 		{
-			
+
 			// лучше бы через enum сделать
-			if (button2.Text == /*Запуск*/button2Text[0])
+			if (button2.Text == /*Запуск*/button2Text[Convert.ToInt32(button2Pos.RUN)])
 			{
-				runDate = DateTime.Now;
-				
-				watch();
-				
+				await run();
 
-
-				if ((textBox1.Text.Count() & textBox2.Text.Count()) == 0) {
-				
-					var confF = new ConflictForm();
-					ShowDialog(confF);
-				}
-
-				var files = FileSearcher.scanDir(dir);
-
-				selectionList = new List<string>();
-
-				// наплодим тредов по фану попробуем распаралелить
-				var threadsNum = Environment.ProcessorCount;
-				var interval = files.Count / threadsNum;
-
-				for (var i = 0; i < threadsNum; i++)
-				{
-					var rangeList = threadsNum - i != 1 ? 
-						files.GetRange(i * interval, interval) : 
-						files.GetRange(i * interval, files.Count - i * interval);
-					var fs = new FileSearcher(rangeList, treeView1, progressBar1, listBox1);
-					
-					
-					threads.Add(new Thread(() => 
-						fs.searchFiles(ref selectionList, textBox1.Text, textBox2.Text)));
-					
-
-				}
-				
-
-				button3.Visible = true;
 			}
-			else if (button2.Text == /*Приостановить*/button2Text[2]) {
-				// херовая идея но пока так 
-				threads.ForEach(th => th.Suspend());
-				watch(true);
+			else if (button2.Text == /*Приостановить*/button2Text[Convert.ToInt32(button2Pos.SUSPEND)])
+			{
+				suspendStation();
 			}
 			// Продолжить
 			else
 			{
-				//  задепрекейчены 
-				threads.ForEach(th => th.Resume());
-				watch();
+				await resumeStation();
+			}
+		}
+		private async Task run()
+		{
+			timer.Start();
+			if (textBox1.Text.Count() == 0 ||
+					textBox2.Text.Count() == 0 ||
+					fileSearcher.BaseDir.Length == 0)
+			{
+				var confF = new ConflictForm();
+				confF.ShowDialog(this);
+				return;
+			}
+			button2.Text =/*Приостановить*/ button2Text[Convert.ToInt32(button2Pos.SUSPEND)];
+			button3.Visible = true;
+
+			if (chapter == 1)
+			{
 				
 
+				runDate = DateTime.Now;
+				label2.Text = "Идет сканирование директории";
+
+				try
+				{
+					await Task.Run(() => fileSearcher.scanDir(fileSearcher.BaseDir, cancelToken.Token), cancelToken.Token);
+					progressBar1.Maximum = fileSearcher.filesPath.Count;
+				}
+				catch (OperationCanceledException)
+				{
+					return;
+				}
+				
+				chapter = 2;
 			}
+			if (chapter == 2)
+			{
+				label2.Text = "Идет поиск";
+
+				try
+				{
+					await Task.Run(() => fileSearcher.searchFiles(textBox1.Text, textBox2.Text, cancelToken.Token),
+						cancelToken.Token);
+				}
+				catch (OperationCanceledException)
+				{
+					return;
+				}
+
+				endStation();
+				chapter = 1;
+
+			}
+		}
+		
+		private void endStation() {
+			timer.Stop();
+			label2.Text = "Готово";
+			button2.Text = button2Text[Convert.ToInt32(button2Pos.RUN)];
+			button3.Visible = false;
+			progressBar1.Value = 0;
+			textBox1.Text = "";
+			textBox2.Text = "";
+			label3.Text = "";
+		}
+		
+		private void suspendStation()
+		{
+			timer.Stop();
+			cancelToken.Cancel();
+			cancelToken = new CancellationTokenSource();
+			button2.Text = button2Text[Convert.ToInt32(button2Pos.RESUME)];
+		}
+		
+		private async Task resumeStation()
+		{
+			await run();
+
 		}
 	}
 }

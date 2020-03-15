@@ -10,27 +10,34 @@ using System.Windows.Forms;
 namespace FileSearcher
 {
 	
-	class TreeViewAdder
+	public class TreeViewAdder
 	{
 
 		TreeView tw = null;
 		public TreeViewAdder(TreeView tw) {
 			this.tw = tw;
 		}
+
 		
-		
-		public async void Add( List<string> files) {
+		public void Add( List<string> files) {
 			
 			tw.BeginUpdate();
-			files.Select(name => treeViewAdder(name));
+			files.Select(name => treeViewAdder(name)).ToArray();
 			tw.EndUpdate();
 			
+		}
+		public int indexOfText(TreeNodeCollection tn, string name) {
+			foreach (TreeNode n in tn) {
+				if (n.Text == name)
+					return n.Index;
+			}
+			return -1;
 		}
 		private int treeViewAdder(string file)
 		{
 			var shards = new Queue<string>(file.Split('\\'));
 			_treeViewAdder(tw.Nodes, shards);
-
+			
 			return 0;
 
 		}
@@ -45,15 +52,17 @@ namespace FileSearcher
 			string ss;
 			if (shards.Count == 0) return;
 
-			if (tr.IndexOfKey(ss = shards.Dequeue()) == -1)
+			if (indexOfText(tr,ss = shards.Dequeue()) == -1)
 			{
 				tr.Add(ss);
-				_treeViewAdder(tr[ss].Nodes, shards);
+				
+				_treeViewAdder(tr[indexOfText(tr,ss)].Nodes, shards);
 			}
 			else
 			{
-				_treeViewAdder(tr[ss].Nodes, shards);
+				_treeViewAdder(tr[indexOfText(tr, ss)].Nodes, shards);
 			}
 		}
+		
 	}
 }

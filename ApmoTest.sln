@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileSearcher", "FileSearche
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{86AE54FB-110E-4A24-A2D7-708F07771715}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApmoTests", "ApmoTests\ApmoTests.csproj", "{7AF7CD27-94B2-4AAD-9485-9E0A47FA1CD8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{86AE54FB-110E-4A24-A2D7-708F07771715}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86AE54FB-110E-4A24-A2D7-708F07771715}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86AE54FB-110E-4A24-A2D7-708F07771715}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AF7CD27-94B2-4AAD-9485-9E0A47FA1CD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AF7CD27-94B2-4AAD-9485-9E0A47FA1CD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AF7CD27-94B2-4AAD-9485-9E0A47FA1CD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AF7CD27-94B2-4AAD-9485-9E0A47FA1CD8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

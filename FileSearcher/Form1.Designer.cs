@@ -7,7 +7,7 @@
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
 
-		
+
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>
@@ -31,26 +31,23 @@
 		{
 			this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
-			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.button1 = new System.Windows.Forms.Button();
-			this.checkBox1 = new System.Windows.Forms.CheckBox();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.textBox1 = new System.Windows.Forms.TextBox();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.label1 = new System.Windows.Forms.Label();
+			this.button1 = new System.Windows.Forms.Button();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.textBox2 = new System.Windows.Forms.TextBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
-			this.listBox1 = new System.Windows.Forms.ListBox();
-			this.label1 = new System.Windows.Forms.Label();
-			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.treeView1 = new System.Windows.Forms.TreeView();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.button2 = new System.Windows.Forms.Button();
-			this.button3 = new System.Windows.Forms.Button();
-			this.progressBar1 = new System.Windows.Forms.ProgressBar();
-			this.label5 = new System.Windows.Forms.Label();
+			this.label2 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
+			this.label5 = new System.Windows.Forms.Label();
+			this.progressBar1 = new System.Windows.Forms.ProgressBar();
+			this.button3 = new System.Windows.Forms.Button();
+			this.button2 = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -66,17 +63,24 @@
 			// groupBox1
 			// 
 			this.groupBox1.Controls.Add(this.textBox1);
-			this.groupBox1.Controls.Add(this.checkBox1);
 			this.groupBox1.Location = new System.Drawing.Point(248, 12);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(207, 106);
 			this.groupBox1.TabIndex = 5;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = "2. Шаблон имени файла";
+			this.groupBox1.Text = "2. Шаблон имени файла(regex):";
 			this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+			// 
+			// textBox1
+			// 
+			this.textBox1.Location = new System.Drawing.Point(6, 52);
+			this.textBox1.Name = "textBox1";
+			this.textBox1.Size = new System.Drawing.Size(179, 20);
+			this.textBox1.TabIndex = 4;
 			// 
 			// groupBox2
 			// 
+			this.groupBox2.Controls.Add(this.label1);
 			this.groupBox2.Controls.Add(this.button1);
 			this.groupBox2.Location = new System.Drawing.Point(28, 12);
 			this.groupBox2.Name = "groupBox2";
@@ -84,6 +88,15 @@
 			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = "1. Стартовая директория (с которой начинается поиск)";
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(9, 82);
+			this.label1.Name = "label1";
+			this.label1.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+			this.label1.Size = new System.Drawing.Size(0, 13);
+			this.label1.TabIndex = 1;
 			// 
 			// button1
 			// 
@@ -95,16 +108,6 @@
 			this.button1.UseVisualStyleBackColor = true;
 			this.button1.Click += new System.EventHandler(this.button1_Click);
 			// 
-			// checkBox1
-			// 
-			this.checkBox1.AutoSize = true;
-			this.checkBox1.Location = new System.Drawing.Point(15, 19);
-			this.checkBox1.Name = "checkBox1";
-			this.checkBox1.Size = new System.Drawing.Size(57, 17);
-			this.checkBox1.TabIndex = 3;
-			this.checkBox1.Text = "Regex";
-			this.checkBox1.UseVisualStyleBackColor = true;
-			// 
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.textBox2);
@@ -115,13 +118,6 @@
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "3. Набор символов, которые могут содержаться в файле";
 			// 
-			// textBox1
-			// 
-			this.textBox1.Location = new System.Drawing.Point(6, 52);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(179, 20);
-			this.textBox1.TabIndex = 4;
-			// 
 			// textBox2
 			// 
 			this.textBox2.Location = new System.Drawing.Point(6, 54);
@@ -131,11 +127,7 @@
 			// 
 			// groupBox4
 			// 
-			this.groupBox4.Controls.Add(this.label4);
 			this.groupBox4.Controls.Add(this.label3);
-			this.groupBox4.Controls.Add(this.label2);
-			this.groupBox4.Controls.Add(this.label1);
-			this.groupBox4.Controls.Add(this.listBox1);
 			this.groupBox4.Location = new System.Drawing.Point(28, 207);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(312, 143);
@@ -143,52 +135,13 @@
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = "Какие файл(ы) обрабатывается в данный момент:";
 			// 
-			// listBox1
-			// 
-			this.listBox1.AllowDrop = true;
-			this.listBox1.FormattingEnabled = true;
-			this.listBox1.Location = new System.Drawing.Point(6, 64);
-			this.listBox1.Name = "listBox1";
-			this.listBox1.RightToLeft = System.Windows.Forms.RightToLeft.No;
-			this.listBox1.Size = new System.Drawing.Size(259, 43);
-			this.listBox1.TabIndex = 0;
-			this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
-			// 
-			// label1
-			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(7, 20);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(160, 13);
-			this.label1.TabIndex = 1;
-			this.label1.Text = "Кол-во обработанных файлов:";
-			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(173, 20);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(13, 13);
-			this.label2.TabIndex = 2;
-			this.label2.Text = "0";
-			// 
 			// label3
 			// 
 			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(10, 37);
+			this.label3.Location = new System.Drawing.Point(26, 30);
 			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(243, 13);
-			this.label3.TabIndex = 3;
-			this.label3.Text = "Прошедшее от начала запуска поиска время: ";
-			// 
-			// label4
-			// 
-			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(256, 37);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(13, 13);
-			this.label4.TabIndex = 4;
-			this.label4.Text = "0";
+			this.label3.Size = new System.Drawing.Size(0, 13);
+			this.label3.TabIndex = 0;
 			// 
 			// groupBox5
 			// 
@@ -209,6 +162,7 @@
 			// 
 			// groupBox6
 			// 
+			this.groupBox6.Controls.Add(this.label2);
 			this.groupBox6.Controls.Add(this.label6);
 			this.groupBox6.Controls.Add(this.label5);
 			this.groupBox6.Controls.Add(this.progressBar1);
@@ -220,15 +174,38 @@
 			this.groupBox6.TabIndex = 12;
 			this.groupBox6.TabStop = false;
 			// 
-			// button2
+			// label2
 			// 
-			this.button2.Location = new System.Drawing.Point(23, 33);
-			this.button2.Name = "button2";
-			this.button2.Size = new System.Drawing.Size(75, 23);
-			this.button2.TabIndex = 0;
-			this.button2.Text = "Запуск";
-			this.button2.UseVisualStyleBackColor = true;
-			this.button2.Click += new System.EventHandler(this.button2_Click);
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(23, 63);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(0, 13);
+			this.label2.TabIndex = 5;
+			// 
+			// label6
+			// 
+			this.label6.AutoSize = true;
+			this.label6.Location = new System.Drawing.Point(416, 42);
+			this.label6.Name = "label6";
+			this.label6.Size = new System.Drawing.Size(34, 13);
+			this.label6.TabIndex = 4;
+			this.label6.Text = "0 сек";
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(256, 42);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(137, 13);
+			this.label5.TabIndex = 3;
+			this.label5.Text = "Время с запуска прошло:";
+			// 
+			// progressBar1
+			// 
+			this.progressBar1.Location = new System.Drawing.Point(6, 10);
+			this.progressBar1.Name = "progressBar1";
+			this.progressBar1.Size = new System.Drawing.Size(697, 17);
+			this.progressBar1.TabIndex = 2;
 			// 
 			// button3
 			// 
@@ -241,30 +218,15 @@
 			this.button3.Visible = false;
 			this.button3.Click += new System.EventHandler(this.button3_Click);
 			// 
-			// progressBar1
+			// button2
 			// 
-			this.progressBar1.Location = new System.Drawing.Point(6, 10);
-			this.progressBar1.Name = "progressBar1";
-			this.progressBar1.Size = new System.Drawing.Size(697, 17);
-			this.progressBar1.TabIndex = 2;
-			// 
-			// label5
-			// 
-			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(256, 42);
-			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(137, 13);
-			this.label5.TabIndex = 3;
-			this.label5.Text = "Время с запуска прошло:";
-			// 
-			// label6
-			// 
-			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(416, 42);
-			this.label6.Name = "label6";
-			this.label6.Size = new System.Drawing.Size(34, 13);
-			this.label6.TabIndex = 4;
-			this.label6.Text = "0 сек";
+			this.button2.Location = new System.Drawing.Point(23, 33);
+			this.button2.Name = "button2";
+			this.button2.Size = new System.Drawing.Size(75, 23);
+			this.button2.TabIndex = 0;
+			this.button2.Text = "Запуск";
+			this.button2.UseVisualStyleBackColor = true;
+			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
 			// Form1
 			// 
@@ -282,6 +244,7 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.groupBox3.ResumeLayout(false);
 			this.groupBox3.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
@@ -299,16 +262,10 @@
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Button button1;
-		private System.Windows.Forms.CheckBox checkBox1;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.TextBox textBox2;
 		private System.Windows.Forms.GroupBox groupBox4;
-		private System.Windows.Forms.ListBox listBox1;
-		private System.Windows.Forms.Label label4;
-		private System.Windows.Forms.Label label3;
-		private System.Windows.Forms.Label label2;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.GroupBox groupBox5;
 		private System.Windows.Forms.TreeView treeView1;
 		private System.Windows.Forms.GroupBox groupBox6;
@@ -317,6 +274,9 @@
 		private System.Windows.Forms.Button button2;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label label3;
 	}
 }
 
