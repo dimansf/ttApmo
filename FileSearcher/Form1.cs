@@ -22,11 +22,13 @@ namespace FileSearcher
 		private enum button2Pos {RUN = 0, SUSPEND  =1, RESUME = 2};
 		private string selectedDir = "";
 		private SearchOperator fileSearcher;
+		private bool newRun = true;
+		private Task task;
 
 		private int chapter = 1;
 		private string currentFile = "";
 
-		private DateTime runDate = DateTime.Now;
+		private TimeSpan runDate = new TimeSpan(0,0,0);
 
 
 		System.Windows.Forms.Timer timer;
@@ -37,7 +39,7 @@ namespace FileSearcher
 		public Form1()
 		{
 			InitializeComponent();
-			
+
 			
 			treeAdder = new TreeViewAdder(treeView1);
 
@@ -47,6 +49,7 @@ namespace FileSearcher
 			
 
 			cancelToken = new CancellationTokenSource();
+			
 
 		}
 
@@ -67,17 +70,17 @@ namespace FileSearcher
 			using (var fbd = new FolderBrowserDialog())
 			{
 				DialogResult result = fbd.ShowDialog();
-
-				if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+				var path = fbd.SelectedPath;
+				if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(path))
 				{
-					fileSearcher = new SearchOperator(fbd.SelectedPath);
+					button3_Click(null, null);
+					fileSearcher = new SearchOperator(path);
 					fileSearcher.onCurrentScanFile += (a, args) =>
 					{
 						var ar = args as CustomArgs;
 						currentFile = ar.fileName;
-
 					};
-					label1.Text = selectedDir;
+					label1.Text = path;
 
 				}
 			}
@@ -103,16 +106,33 @@ namespace FileSearcher
 
 		}
 
+		/// <summary>
+		/// Полный сброс
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void button3_Click(object sender, EventArgs e)
 		{
-			cancelToken.Cancel();
+			try
+			{
+				cancelToken.Cancel();
+				cancelToken.Dispose();
+			}
+			catch { 
+			}
+			fileSearcher = null;
 			cancelToken = new CancellationTokenSource();
-
+			newRun = true;
+			timer.Stop();
+			button1.Enabled = true;
 			treeView1.Nodes.Clear();
+			treeView1.Update();
 			progressBar1.Value = 0;
+			progressBar1.Visible = true;
 			label1.Text = "";
 			label6.Text = "";
 			label3.Text = "";
+			label4.Text = "";
 			button2.Text = button2Text[Convert.ToInt32(button2Pos.RUN)];
 			button3.Visible = false;
 			chapter = 1;
@@ -120,31 +140,45 @@ namespace FileSearcher
 		}
 
 
-
+		/// <summary>
+		/// ОБновление данных в ui потоке
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void updateChecker(object sender, EventArgs e)
 		{
-			var diff = DateTime.Now - runDate;
+			runDate = runDate.Add(new TimeSpan(0, 0, 1));
+			var diff = runDate;
 
 			label6.Text = ((diff.Hours != 0) ? $" {diff.Hours} часов " : "") +
 				((diff.Minutes != 0) ? $" {diff.Minutes} минут " : "") +
 				$"{diff.Seconds} секунд ";
 
 			label3.Text = currentFile;
-			treeAdder.Add(fileSearcher.Result);
+			var fls = Convert.ToString(fileSearcher?.Result.Count);
+			label4.Text = fls == "0" ? "" : fls;
+			treeAdder.Add(fileSearcher?.Result);
+			treeView1.Update();
+			if(chapter == 2) 
+				progressBar1.Value = 
+					progressBar1.Maximum - fileSearcher.filesPath.Count;
 		}
 
+		/// <summary>
+		/// Запуск приостановка возобновление
+		/// </summary>
 		/// <param name="sender"></param>
 		/// <param name="e"></param>
 		private async void button2_Click(object sender, EventArgs e)
 		{
 
 			// лучше бы через enum сделать
-			if (button2.Text == /*Запуск*/button2Text[Convert.ToInt32(button2Pos.RUN)])
+			if (button2.Text == button2Text[Convert.ToInt32(button2Pos.RUN)])
 			{
-				await run();
-
+				await  run();
+				
 			}
-			else if (button2.Text == /*Приостановить*/button2Text[Convert.ToInt32(button2Pos.SUSPEND)])
+			else if (button2.Text ==button2Text[Convert.ToInt32(button2Pos.SUSPEND)])
 			{
 				suspendStation();
 			}
@@ -152,82 +186,110 @@ namespace FileSearcher
 			else
 			{
 				await resumeStation();
+				
 			}
 		}
 		private async Task run()
 		{
-			timer.Start();
+			
 			if (textBox1.Text.Count() == 0 ||
 					textBox2.Text.Count() == 0 ||
-					fileSearcher.BaseDir.Length == 0)
+					fileSearcher == null ||
+					fileSearcher?.BaseDir.Length == 0)
 			{
 				var confF = new ConflictForm();
 				confF.ShowDialog(this);
 				return;
 			}
+
+			button1.Enabled = false;
+			
+			timer.Start();
+			
 			button2.Text =/*Приостановить*/ button2Text[Convert.ToInt32(button2Pos.SUSPEND)];
 			button3.Visible = true;
+			if (newRun) {
+				newRun = !newRun;
+				runDate = new TimeSpan(0, 0, 0);
+			}
 
 			if (chapter == 1)
 			{
-				
 
-				runDate = DateTime.Now;
+				Task tt;
+				
 				label2.Text = "Идет сканирование директории";
 
 				try
 				{
-					await Task.Run(() => fileSearcher.scanDir(fileSearcher.BaseDir, cancelToken.Token), cancelToken.Token);
-					progressBar1.Maximum = fileSearcher.filesPath.Count;
+					tt = Task.Run(() => fileSearcher.scanDir(fileSearcher.BaseDir, cancelToken.Token), cancelToken.Token);
+					await tt;
+
+
 				}
-				catch (OperationCanceledException)
+				catch
 				{
-					return;
+					Console.WriteLine("");
 				}
-				
-				chapter = 2;
+				finally {
+					if (!cancelToken.Token.IsCancellationRequested)
+					{
+						progressBar1.Maximum = fileSearcher.filesPath.Count;
+						chapter = 2;
+					}
+				}
 			}
+
 			if (chapter == 2)
 			{
 				label2.Text = "Идет поиск";
-
 				try
 				{
-					await Task.Run(() => fileSearcher.searchFiles(textBox1.Text, textBox2.Text, cancelToken.Token),
+					var tt = Task.Run(() => fileSearcher.searchFiles(textBox1.Text, textBox2.Text, cancelToken.Token),
 						cancelToken.Token);
+					await tt;
+					
 				}
-				catch (OperationCanceledException)
+				catch
 				{
-					return;
+					Console.WriteLine("");
 				}
-
-				endStation();
-				chapter = 1;
+				finally {
+					if (!cancelToken.Token.IsCancellationRequested)
+					{
+						endStation();
+						chapter = 1;
+					}
+				}
 
 			}
+			
+			
 		}
 		
 		private void endStation() {
 			timer.Stop();
+			newRun = true;
+			button1.Enabled = true;
 			label2.Text = "Готово";
 			button2.Text = button2Text[Convert.ToInt32(button2Pos.RUN)];
 			button3.Visible = false;
-			progressBar1.Value = 0;
-			textBox1.Text = "";
-			textBox2.Text = "";
 			label3.Text = "";
+			progressBar1.Visible = false;
 		}
 		
 		private void suspendStation()
 		{
 			timer.Stop();
+			label2.Text = "";
 			cancelToken.Cancel();
-			cancelToken = new CancellationTokenSource();
+			
 			button2.Text = button2Text[Convert.ToInt32(button2Pos.RESUME)];
 		}
 		
 		private async Task resumeStation()
 		{
+			cancelToken = new CancellationTokenSource();
 			await run();
 
 		}

@@ -19,11 +19,21 @@ namespace FileSearcher
 		}
 
 		
-		public void Add( List<string> files) {
+		public void Add( List<string> files=null) {
 			
 			tw.BeginUpdate();
-			files.Select(name => treeViewAdder(name)).ToArray();
+			try
+			{
+				files?.Select(name => treeViewAdder(name)).ToArray();
+			}
+			catch (InvalidOperationException) {
+
+			}
+			
 			tw.EndUpdate();
+			
+			
+			
 			
 		}
 		public int indexOfText(TreeNodeCollection tn, string name) {

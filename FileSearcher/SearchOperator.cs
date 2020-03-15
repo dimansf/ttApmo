@@ -19,10 +19,7 @@ namespace FileSearcher
 		/// директория с которой идет сканирование
 		/// </summary>
 		public string BaseDir { get; private set; }
-		///// <summary>
-		///// Кол-во файлов 
-		///// </summary>
-		//public int CountFiles { get { return filesPath.Count; } }
+		
 		/// <summary>
 		/// Токен для отмены долгих операций
 		/// </summary>
@@ -40,15 +37,14 @@ namespace FileSearcher
 		public Queue<string> filesPath { get; private set; }
 
 
-		//private List<string> result = new List<string>();
+		/// <summary>
+		/// Список файлов с полным путем 
+		/// </summary>
 		public List<string> Result { get; private set; }
 
 
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="logFile"> Статичный и общий для всех обьектов класса</param>
+		
 		public SearchOperator(string path)
 		{
 			Result = new List<string>();
@@ -59,11 +55,11 @@ namespace FileSearcher
 		}
 
 		/// <summary>
-		///  Функция поиска файлов по заданным критериям
+		/// Поиск файла по условию
 		/// </summary>
-		/// <param name="fnPattern">filename pattern</param>
-		/// <param name="dataPattern"></param>
-
+		/// <param name="fnPattren"></param>
+		/// <param name="cPattern"></param>
+		/// <param name="ct"></param>
 		/// <returns></returns>
 		public bool searchFiles(string fnPattren, string cPattern, CancellationToken? ct = null)
 		{
@@ -75,7 +71,7 @@ namespace FileSearcher
 			while (filesPath.Count != 0) {
 				ct?.ThrowIfCancellationRequested();
 				
-				var name = filesPath.Dequeue();
+				var name = filesPath.Peek();
 
 
 				var ca = new CustomArgs();
@@ -88,15 +84,17 @@ namespace FileSearcher
 				{
 					try
 					{
+						// по дефолту utf-8 кодировка 
 						using (StreamReader sr = new StreamReader(name))
 						{
 							string line;
 
 							while ((line = sr.ReadLine()) != null)
 							{
+								ct?.ThrowIfCancellationRequested();
+
 								if (dataContentPattern.IsMatch(line))
 								{
-
 									SuccessSearch(ca);
 									Result.Add(name);
 									break;
@@ -108,25 +106,41 @@ namespace FileSearcher
 					{
 						File.AppendAllText(logFile, e.Message);
 					}
+					finally {
+						filesPath.Dequeue();
+						oldName = name;
+					}
 				}
-				oldName = name;
+				// удаляем файл из очереди после того как проверим
+				
 			}
 
 			return true;
 		}
-
+		/// <summary>
+		/// Текущий обрабатываемый файл
+		/// </summary>
+		/// <param name="e"></param>
 		private void CurrentScanFile(EventArgs e)
 		{
 			EventHandler handler = onCurrentScanFile;
 			handler?.Invoke(this, e);
 		}
+		/// <summary>
+		/// Удачное совпадение
+		/// </summary>
+		/// <param name="e"></param>
 		private void SuccessSearch(EventArgs e)
 		{
 			EventHandler handler = onSuccessSearch;
 			handler?.Invoke(this, e);
 		}
-
+		/// <summary>
+		/// Сканирует директорию и создает список всех файлов по абсолютному пути 
+		/// </summary>
+		/// <param name="e"></param>
 		public bool scanDir(string dir = null, CancellationToken? ct = null) {
+			ct?.ThrowIfCancellationRequested();
 			var d = dir == null ? BaseDir : dir;
 			return _scanDir(d, filesPath, ct);
 		}
